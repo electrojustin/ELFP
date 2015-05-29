@@ -70,7 +70,7 @@ huff_node* gen_huff_tree (huff_node* head)
 	return head;
 }
 
-void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len, uint8_t branch)
+void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len, char branch)
 {
 	if (!prefix_len)
 	{
@@ -96,5 +96,48 @@ void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len
 			gen_huff_prefixes (head->a, head->prefix, prefix_len + 1, 0);
 			gen_huff_prefixes (head->d, head->prefix, prefix_len + 1, 1);
 		}
+	}
+}
+
+//Turns the tree into a queue again, this time with prefixes
+//Note: due to the recursive nature of this algorithm, a pointer to a NULL pointer must be initially passed as the "head" parameter
+//After the queue has been made, that NULL pointer will no longer be null and will instead point to the head of the queue
+void recreate_queue (huff_node** head, huff_node* tree)
+{
+	if (!tree->a) //Leaf
+	{
+		if (*head)
+			link_huff_node (*head, tree)
+		else
+			*head = tree;
+	}
+	else //Internal node
+	{
+		recreate_queue (head, tree->a);
+		recreate_queue (head, tree->d);
+	}
+}
+
+//Traverses the Huffman tree using the current position in the bitstream and returns the symbol the current prefix corresponds to
+uint8_t next_sym (huff_node* tree, bitstream in)
+{
+	char bit;
+
+	if (!tree->a) //Leaf
+		return tree->data;
+	else
+	{
+		bit = next_bit (in);
+
+		if (bit == -1)
+		{
+			printf ("Error: reached end of stream before valid prefix\n");
+			exit (-1);
+		}
+
+		if (!bit)
+			return next_sym (tree->a, in);
+		else
+			return next_sym (tree->d, in);
 	}
 }
