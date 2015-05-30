@@ -1,5 +1,6 @@
 // Implementation of Huffman coding
 #include <stdlib.h>
+#include <stdio.h>
 #include "huff.h"
 
 huff_node* link_huff_node (huff_node* current, huff_node* to_link)
@@ -56,15 +57,37 @@ huff_node* gen_huff_tree (huff_node* head)
 		temp_parent->freq = temp_a->freq + temp_d->freq;
 
 		//Add parent to the priority queue
-		current = head;
-		while (current)
+		if (head->freq > temp_parent->freq)
 		{
-			if (current->freq < temp_parent->freq || !current->next)
+			temp_parent->next = head;
+			head = temp_parent;
+		}
+		else
+		{
+			current = head;
+			while (current)
 			{
-				link_huff_node (current, temp_parent);
-				break;
+				if (!current->next || current->next->freq > temp_parent->freq)
+				{
+					link_huff_node (current, temp_parent);
+					break;
+				}
+				current = current->next;
 			}
 		}
+	}
+
+	if (head->next)
+	{
+		temp_a = head;
+		temp_d = head->next;
+		temp_parent = (huff_node*)malloc (sizeof (huff_node));
+		temp_parent->next = NULL;
+		temp_parent->a = temp_a;
+		temp_parent->d = temp_d;
+		temp_parent->freq = temp_a->freq + temp_d->freq;
+
+		head = temp_parent;
 	}
 
 	return head;
@@ -107,7 +130,7 @@ void recreate_queue (huff_node** head, huff_node* tree)
 	if (!tree->a) //Leaf
 	{
 		if (*head)
-			link_huff_node (*head, tree)
+			link_huff_node (*head, tree);
 		else
 			*head = tree;
 	}
@@ -124,7 +147,7 @@ uint8_t next_sym (huff_node* tree, bitstream in)
 	char bit;
 
 	if (!tree->a) //Leaf
-		return tree->data;
+		return tree->sym;
 	else
 	{
 		bit = next_bit (in);

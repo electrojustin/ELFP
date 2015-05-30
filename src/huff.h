@@ -1,6 +1,7 @@
 #pragma once
 
-#include <intypes.h>
+#include <inttypes.h>
+#include "bitstream.h"
 
 struct huff_node
 {
@@ -20,7 +21,7 @@ struct huff_node
 typedef struct huff_node huff_node;
 
 huff_node* link_huff_node (huff_node* current, huff_node* to_link);
-void unlink_huff_node (huff_node* current);
+huff_node* unlink_huff_node (huff_node* current);
 huff_node* gen_huff_tree (huff_node* head);
 //Invoke with gen_huff_prefixes (head, 0, 0, 0);
 void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len, char branch);
