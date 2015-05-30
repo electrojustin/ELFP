@@ -20,6 +20,7 @@ struct elfp_hdr
 	uint32_t num_syms; //Number of entries in symbol table
 
 	uint64_t data_offset; //Offset to compressed data
+	int64_t num_bits; //Actual size of compressed data in bits
 	size_t comp_size; //Size of the compressed data in file
 	size_t uncomp_size; //Size of decompressed data
 };
