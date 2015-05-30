@@ -9,6 +9,7 @@ bitstream initialize_bitstream (void)
 	target->buf [0] = 0;
 	target->buf_size = 1;
 	target->pos = 0;
+	target->num_bits = 0;
 
 	return target;
 }
@@ -16,6 +17,9 @@ bitstream initialize_bitstream (void)
 void add_bit (bitstream target, char data)
 {
 	int i = target->pos / 8;
+
+	if (target->pos > target->num_bits - 1)
+		target->num_bits ++;
 
 	if (i + 1 > target->buf_size)
 	{
@@ -39,7 +43,7 @@ char next_bit (bitstream target)
 	char ret;
 	int i = target->pos / 8;
 
-	if (i >= target->buf_size)
+	if (target->pos > target->num_bits - 1)
 		return -1;
 
 	ret = (target->buf [i] >> (target->pos % 8)) & 1;

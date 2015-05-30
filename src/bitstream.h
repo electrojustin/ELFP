@@ -7,6 +7,7 @@ struct bit_desc
 {
 	uint8_t* buf;
 	size_t buf_size;
+	int64_t num_bits;
 	int pos;
 };
 

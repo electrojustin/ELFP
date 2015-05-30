@@ -22,6 +22,15 @@ int main (void)
 	printf ("%d %d\n", tester->buf [0], tester->buf [1]);
 
 	seek_bit (tester, 0);
+	printf ("%d\n", tester->num_bits);
+	printf ("%d\n", next_bit (tester));
+	printf ("%d\n", next_bit (tester));
+	printf ("%d\n", next_bit (tester));
+	printf ("%d\n", next_bit (tester));
+	printf ("%d\n", next_bit (tester));
+	printf ("%d\n", next_bit (tester));
+	printf ("%d\n", next_bit (tester));
+	printf ("%d\n", next_bit (tester));
 	printf ("%d\n", next_bit (tester));
 	printf ("%d\n", next_bit (tester));
 	printf ("%d\n", next_bit (tester));
