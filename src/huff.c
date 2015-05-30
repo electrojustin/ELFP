@@ -138,6 +138,8 @@ void recreate_queue (huff_node** head, huff_node* tree)
 	{
 		recreate_queue (head, tree->a);
 		recreate_queue (head, tree->d);
+
+		free (tree);
 	}
 }
 
