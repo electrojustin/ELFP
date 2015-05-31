@@ -1,5 +1,8 @@
 #pragma once
 
+#include "bitstream.h"
+#include "huff.h"
+
 struct compressed_data
 {
 	huff_node* stat_data;
