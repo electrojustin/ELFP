@@ -9,6 +9,8 @@ huff_node* link_huff_node (huff_node* current, huff_node* to_link)
 	{
 		to_link->next = current->next;
 		current->next = to_link;
+		to_link->next->prev = to_link;
+		to_link->prev = current;
 	}
 	
 	return to_link;
@@ -16,11 +18,10 @@ huff_node* link_huff_node (huff_node* current, huff_node* to_link)
 
 huff_node* unlink_huff_node (huff_node* current)
 {
-	huff_node* temp = current->next;
+	current->prev->next = current->next;
+	current->next->prev = current->prev;
 
-	current->next = temp->next;
-
-	return temp;
+	return current;
 }
 
 huff_node* gen_huff_tree (huff_node* head)
@@ -144,7 +145,7 @@ void recreate_queue (huff_node** head, huff_node* tree)
 }
 
 //Traverses the Huffman tree using the current position in the bitstream and returns the symbol the current prefix corresponds to
-uint8_t next_sym (huff_node* tree, bitstream in)
+int16_t next_sym (huff_node* tree, bitstream in)
 {
 	char bit;
 
@@ -155,10 +156,7 @@ uint8_t next_sym (huff_node* tree, bitstream in)
 		bit = next_bit (in);
 
 		if (bit == -1)
-		{
-			printf ("Error: reached end of stream before valid prefix\n");
-			exit (-1);
-		}
+			return -1;
 
 		if (!bit)
 			return next_sym (tree->a, in);
