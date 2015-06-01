@@ -9,7 +9,8 @@ huff_node* link_huff_node (huff_node* current, huff_node* to_link)
 	{
 		to_link->next = current->next;
 		current->next = to_link;
-		to_link->next->prev = to_link;
+		if (to_link->next)
+			to_link->next->prev = to_link;
 		to_link->prev = current;
 	}
 	
@@ -18,8 +19,10 @@ huff_node* link_huff_node (huff_node* current, huff_node* to_link)
 
 huff_node* unlink_huff_node (huff_node* current)
 {
-	current->prev->next = current->next;
-	current->next->prev = current->prev;
+	if (current->prev)
+		current->prev->next = current->next;
+	if (current->next)
+		current->next->prev = current->prev;
 
 	return current;
 }
@@ -113,7 +116,7 @@ void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len
 	{
 		//Figure out the current prefix
 		head->prefix_len = prefix_len;
-		head->prefix = (last_prefix << (prefix_len - 1)) | branch;
+		head->prefix = (last_prefix << 1) | branch;
 
 		if (head->a) //This node isn't a leaf
 		{

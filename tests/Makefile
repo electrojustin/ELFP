@@ -1,4 +1,4 @@
-all: huff_test bitstream_test
+all: huff_test bitstream_test compress_test
 huff_test: huff_test.o ../src/huff.o ../src/bitstream.o
 	gcc -g huff_test.o ../src/huff.o ../src/bitstream.o -o huff_test
 huff_test.o: huff_test.c ../src/huff.h
