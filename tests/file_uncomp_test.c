@@ -1,6 +1,8 @@
+#include "../src/compress.h"
 #include "../src/format.h"
 #include "../src/bitstream.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main (int argc, char** argv)
 {
@@ -25,33 +27,36 @@ int main (int argc, char** argv)
 	fseek (input_file, 0, SEEK_END);
 	input_file_size = ftell (input_file);
 	fseek (input_file, 0 , SEEK_SET);
+	input_buf = malloc (input_file_size);
 	fread (input_buf, 1, input_file_size, input_file);
-	fclose (executable);
+	fclose (input_file);
 
-	header = input_buf;
-	sym_tab = input_buf + header->sym_offset;
+	header = (elfp_hdr*)input_buf;
+	sym_tab = (sym_hdr*)(input_buf + header->sym_offset);
+	input.data = (bitstream)malloc (sizeof (struct bit_desc));
 	input.data->buf = input_buf + header->data_offset;
 	input.data->buf_size = header->comp_size;
 	input.data->num_bits = header->num_bits;
-	seek_bit (input, 0);
+	seek_bit (input.data, 0);
 	input.stat_data = NULL;
 	for (i = 0; i < header->num_syms; i ++)
 	{
-		if (input.stat_data)
+		if (!input.stat_data)
 		{
 			input.stat_data = (huff_node*)malloc (sizeof (huff_node));
 			input.stat_data->next = NULL;
 			input.stat_data->prev = NULL;
+			temp = input.stat_data;
 		}
 		else
 		{
-			temp = (huff_node*)malloc (sizeof (huff_node));
-			temp->next = input.stat_data;
-			temp->next->prev = temp;
-			input.stat_data = temp;
+			link_huff_node (temp, malloc (sizeof (huff_node)));
+			temp = temp->next;
 		}
-		input.stat_data->sym = sym_tab [i].sym;
-		input.stat_data->freq = sym_tab [i].freq;
+		temp->sym = sym_tab [i].sym;
+		temp->freq = sym_tab [i].freq;
+		temp->a = NULL;
+		temp->d = NULL;
 	}
 
 	out_buf = elfp_decode (input, header->uncomp_size);
@@ -59,7 +64,6 @@ int main (int argc, char** argv)
 	output_file = fopen (argv [2], "w");
 	fwrite (out_buf, 1, header->uncomp_size, output_file);
 	free (out_buf);
-	cleanup_bitstream (input.data);
 	while (input.stat_data)
 	{
 		temp = input.stat_data->next;
@@ -67,3 +71,6 @@ int main (int argc, char** argv)
 		input.stat_data = temp;
 	}
 	fclose (output_file);
+	free (input_buf);
+	free (input.data);
+}

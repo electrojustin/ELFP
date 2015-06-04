@@ -42,7 +42,7 @@ huff_node* gen_huff_nodes (uint8_t* buf, size_t buf_size)
 			if (temp)
 			{
 				temp->freq ++;
-				if (temp->freq > temp->next->freq)
+				if (temp->next && temp->freq > temp->next->freq)
 				{
 					if (temp == head)
 						head = head->next;
@@ -97,6 +97,8 @@ compressed_data elfp_encode (uint8_t* buf, size_t buf_size)
 			stat_data->sym = current->sym;
 			stat_data->freq = current->freq;
 			new_current = stat_data;
+			new_current->next = NULL;
+			new_current->prev = NULL;
 		}
 		else
 		{

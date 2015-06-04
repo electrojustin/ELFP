@@ -2,20 +2,18 @@
 #include "../src/format.h"
 #include "../src/huff.h"
 #include <stdio.h>
-#include <sys/stat.h>
 #include <stdlib.h>
 
 int main (int argc, char** argv)
 {
-	int input_file;
+	FILE* input_file;
 	FILE* output_file;
-	struct stat input_stat;
 	size_t input_file_size;
 	char* input_buf;
 	compressed_data output;
 	huff_node* current;
 	huff_node* temp;
-	int num_syms;
+	int num_syms = 0;
 	elfp_hdr header;
 	sym_hdr current_sym;
 
@@ -25,12 +23,13 @@ int main (int argc, char** argv)
 		exit (-1);
 	}
 
-	input_file = open (argv [1], O_RDONLY);
-
-	fstat (input_file, &input_stat);
-	input_file_size = input_stat.st_size;
-
-	input_buf = mmap (0, input_file_size, PROT_READ, 0, input_file, 0);
+	input_file = fopen (argv [1], "r");
+	fseek (input_file, 0, SEEK_END);
+	input_file_size = ftell (input_file);
+	fseek (input_file, 0, SEEK_SET);
+	input_buf = malloc (input_file_size);
+	fread (input_buf, 1, input_file_size, input_file);
+	fclose (input_file);
 	
 	output = elfp_encode (input_buf, input_file_size);
 
@@ -67,7 +66,6 @@ int main (int argc, char** argv)
 		free (current);
 		current = temp;
 	}
-	cleanup_bitstream (output);
+	cleanup_bitstream (output.data);
 	fclose (output_file);
-	close (input_file);
 }

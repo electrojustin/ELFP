@@ -6,4 +6,4 @@ bitstream.o: bitstream.c bitstream.h
 compress.o: compress.c compress.h bitstream.h huff.h
 	gcc -g -c compress.c
 clean:
-	rm bitstream.o huff.o
+	rm bitstream.o huff.o compress.o
