@@ -33,3 +33,5 @@ void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len
 void recreate_queue (huff_node** head, huff_node* tree);
 //Traverses the Huffman tree using the current position in the bitstream and returns the symbol the current prefix corresponds to
 int16_t next_sym (huff_node* tree, bitstream in);
+void destroy_internal_nodes (huff_node* tree);
+

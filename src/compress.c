@@ -137,8 +137,6 @@ uint8_t* elfp_decode (compressed_data to_decode, size_t ret_size)
 	huff_node* huff_tree;
 
 	huff_tree = gen_huff_tree (to_decode.stat_data);
-	//gen_huff_prefixes (huff_tree, 0, 0, 0);
-	//recreate_queue (&head, huff_tree);
 
 	temp_sym = next_sym (huff_tree, to_decode.data);
 	while (temp_sym != -1)
@@ -147,6 +145,8 @@ uint8_t* elfp_decode (compressed_data to_decode, size_t ret_size)
 		i ++;
 		temp_sym = next_sym (huff_tree, to_decode.data);
 	}
+
+	destroy_internal_nodes (huff_tree);
 
 	return ret;
 }

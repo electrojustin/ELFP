@@ -55,4 +55,5 @@ char next_bit (bitstream target)
 void cleanup_bitstream (bitstream target)
 {
 	free (target->buf);
+	free (target);
 }

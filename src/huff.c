@@ -167,3 +167,13 @@ int16_t next_sym (huff_node* tree, bitstream in)
 			return next_sym (tree->d, in);
 	}
 }
+
+void destroy_internal_nodes (huff_node* tree)
+{
+	if (tree->a)
+	{
+		destroy_internal_nodes (tree->a);
+		destroy_internal_nodes (tree->d);
+		free (tree);
+	}
+}
