@@ -81,6 +81,7 @@ compressed_data elfp_encode (uint8_t* buf, size_t buf_size)
 	huff_node* new_current;
 	huff_node* huff_tree;
 	huff_node* stat_data = NULL;
+	huff_node* temp;
 	int i;
 	int j;
 	bitstream data = initialize_bitstream ();
@@ -125,6 +126,14 @@ compressed_data elfp_encode (uint8_t* buf, size_t buf_size)
 	ret.data = data;
 	ret.stat_data = stat_data;
 
+	current = head;
+	while (current)
+	{
+		temp = current->next;
+		free (current);
+		current = temp;
+	}
+
 	return ret;
 }
 
@@ -134,6 +143,7 @@ uint8_t* elfp_decode (compressed_data to_decode, size_t ret_size)
 	int16_t temp_sym;
 	int i = 0;
 	huff_node* head = NULL;
+	huff_node* temp;
 	huff_node* huff_tree;
 
 	huff_tree = gen_huff_tree (to_decode.stat_data);
@@ -146,7 +156,13 @@ uint8_t* elfp_decode (compressed_data to_decode, size_t ret_size)
 		temp_sym = next_sym (huff_tree, to_decode.data);
 	}
 
-	destroy_internal_nodes (huff_tree);
+	recreate_queue (&head, huff_tree);
+	while (head)
+	{
+		temp = head->next;
+		free (head);
+		head = temp;
+	}
 
 	return ret;
 }

@@ -35,5 +35,5 @@ int main (void)
 	printf ("%s\n", decode_buf);
 	printf ("saved %d bytes\n", 6 - dat.data->buf_size);
 	free (decode_buf);
-	cleanup_bitstream (dat.data);
+	cleanup_bitstream (dat.data);	
 }
