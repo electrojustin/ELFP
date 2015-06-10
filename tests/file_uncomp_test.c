@@ -63,13 +63,7 @@ int main (int argc, char** argv)
 
 	output_file = fopen (argv [2], "w");
 	fwrite (out_buf, 1, header->uncomp_size, output_file);
-	free (out_buf);
-	while (input.stat_data)
-	{
-		temp = input.stat_data->next;
-		free (input.stat_data);
-		input.stat_data = temp;
-	}
+	free (out_buf);	
 	fclose (output_file);
 	free (input_buf);
 	free (input.data);

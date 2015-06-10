@@ -20,4 +20,4 @@ file_uncomp_test: file_uncomp_test.o ../src/huff.o ../src/bitstream.o ../src/com
 file_uncomp_test.o: file_uncomp_test.c ../src/compress.h ../src/format.h ../src/huff.h
 	gcc -g -c file_uncomp_test.c
 clean:
-	rm bitstream_test.o huff_test.o
+	rm bitstream_test.o huff_test.o compress_test.o file_comp_test.o file_uncomp_test.o

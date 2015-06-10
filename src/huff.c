@@ -97,7 +97,7 @@ huff_node* gen_huff_tree (huff_node* head)
 	return head;
 }
 
-void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len, char branch)
+void gen_huff_prefixes (huff_node* head, int last_prefix, uint8_t prefix_len, char branch)
 {
 	if (!prefix_len)
 	{

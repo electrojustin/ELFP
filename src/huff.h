@@ -25,7 +25,7 @@ huff_node* link_huff_node (huff_node* current, huff_node* to_link);
 huff_node* unlink_huff_node (huff_node* current);
 huff_node* gen_huff_tree (huff_node* head);
 //Invoke with gen_huff_prefixes (head, 0, 0, 0);
-void gen_huff_prefixes (huff_node* head, uint8_t last_prefix, uint8_t prefix_len, char branch);
+void gen_huff_prefixes (huff_node* head, int last_prefix, uint8_t prefix_len, char branch);
 //Turns the tree into a queue again, this time with prefixes
 //Note: due to the recursive nature of this algorithm, a pointer to a NULL pointer must be initially passed as the "head" parameter
 //After the queue has been made, that NULL pointer will no longer be null and will instead point to the head of the queue
