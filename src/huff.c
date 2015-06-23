@@ -51,11 +51,14 @@ huff_node* gen_huff_tree (huff_node* head)
 		//Dequeue the highest priority nodes
 		head = head->next->next;
 		temp_a->next = NULL;
+		temp_a->prev = NULL;
 		temp_d->next = NULL;
+		temp_d->prev = NULL;
 
 		//Create the temporary parent
 		temp_parent = (huff_node*)malloc (sizeof (huff_node));
 		temp_parent->next = NULL;
+		temp_parent->prev = NULL;
 		temp_parent->a = temp_a;
 		temp_parent->d = temp_d;
 		temp_parent->freq = temp_a->freq + temp_d->freq;
@@ -85,8 +88,13 @@ huff_node* gen_huff_tree (huff_node* head)
 	{
 		temp_a = head;
 		temp_d = head->next;
+		temp_a->prev = NULL;
+		temp_a->next = NULL;
+		temp_d->prev = NULL;
+		temp_d->next = NULL;
 		temp_parent = (huff_node*)malloc (sizeof (huff_node));
 		temp_parent->next = NULL;
+		temp_parent->prev = NULL;
 		temp_parent->a = temp_a;
 		temp_parent->d = temp_d;
 		temp_parent->freq = temp_a->freq + temp_d->freq;
