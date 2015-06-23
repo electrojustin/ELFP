@@ -3,6 +3,7 @@
 #include "../src/huff.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main (int argc, char** argv)
 {
@@ -15,7 +16,9 @@ int main (int argc, char** argv)
 	huff_node* temp;
 	int num_syms = 0;
 	elfp_hdr header;
+	memset (&header, 0, sizeof (elfp_hdr));
 	sym_hdr current_sym;
+	memset (&current_sym, 0, sizeof (sym_hdr));
 
 	if (argc != 3)
 	{
