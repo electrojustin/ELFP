@@ -71,4 +71,5 @@ int main (int argc, char** argv)
 	}
 	cleanup_bitstream (output.data);
 	fclose (output_file);
+	free (input_buf);
 }
