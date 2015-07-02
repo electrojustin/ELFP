@@ -9,11 +9,17 @@ char* elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_si
 	char* new_elf_buf;
 	Elf64_Ehdr* new_file_header;
 	memset (new_elf_buf, 0, elf_buf_size + sizeof (Elf64_Phdr) + code_size);
-	Elf64_Phdr* new_program_tables = (Elf64_Phdr*)(new_elf_buf + file_header->e_phoff);
+	Elf64_Phdr* new_program_tables;
 	int i;
 	uint64_t entry_point = file_header->e_entry;
 	uint64_t current_offset;
 	Elf64_Phdr new_segment;
+
+	for (i = 0; i < file_header->e_phnum; i ++)
+	{
+		if (progam_tables [i].p_vaddr < entry_point && program_tables [i].p_vaddr + program_tables [i].p_memsz > entry_point)
+			text_segment = new_elf_buf + program_tables [i].p_offset;
+	}
 
 	//Setup the new segment
 	new_segment.p_type = PT_LOAD;
@@ -29,17 +35,16 @@ char* elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_si
 
 	//Allocate memory for the new segment
 	new_elf_buf = (char*)malloc (new_segment.p_offset + code_size);
+	new_file_size = new_segment.p_offset + code_size;
 
 	//Copy everything up to the end of the program tables
 	memcpy (new_elf_buf, elf_buf, file_header->e_phoff + sizeof (Elf64_Phdr)*file_header->e_phnum);
 	current_offset = file_header->e_phoff + sizeof (Elf64_Phdr)*file_header->e_phnum;
 
 	//Modify the offsets on all the segments since we're adding a new segment
+	new_program_tables = (Elf64_Phdr*)(new_elf_buf + file_header->e_phoff);
 	for (i = 0; i < file_header->e_phnum; i ++)
 	{
-		if (new_progam_tables [i].p_vaddr < entry_point && new_program_tables [i].p_vaddr + new_program_tables [i].p_memsz > entry_point)
-			text_segment = new_elf_buf + new_program_tables [i].p_offset;
-
 		if (new_program_table [i].p_offset > file_header->e_phoff)
 			new_program_tables [i].p_offset += sizeof (Elf64_Phdr);
 	}
