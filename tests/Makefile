@@ -1,4 +1,4 @@
-all: huff_test bitstream_test compress_test file_comp_test file_uncomp_test
+all: huff_test bitstream_test compress_test file_comp_test file_uncomp_test injection_test
 huff_test: huff_test.o ../src/huff.o ../src/bitstream.o
 	gcc -g huff_test.o ../src/huff.o ../src/bitstream.o -o huff_test
 huff_test.o: huff_test.c ../src/huff.h
@@ -20,7 +20,7 @@ file_uncomp_test: file_uncomp_test.o ../src/huff.o ../src/bitstream.o ../src/com
 file_uncomp_test.o: file_uncomp_test.c ../src/compress.h ../src/format.h ../src/huff.h
 	gcc -g -c file_uncomp_test.c
 injection_test: ../src/elf_inject.o injection_test.o
-	gcc -g injection_test.o ../src/elf_inject.o -o injection_test
+	gcc -g injection_test.o ../src/elf_inject.o -o injection_test -lm
 injection_test.o: injection_test.c ../src/elf_inject.h
 	gcc -g -c injection_test.c
 clean:

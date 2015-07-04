@@ -8,4 +8,4 @@ compress.o: compress.c compress.h bitstream.h huff.h
 elf_inject.o: elf_inject.c elf_inject.h
 	gcc -g -c elf_inject.c
 clean:
-	rm bitstream.o huff.o compress.o
+	rm bitstream.o huff.o compress.o elf_inject.o
