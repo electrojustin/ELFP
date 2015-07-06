@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 blob elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_size)
 {
@@ -61,7 +62,7 @@ blob elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_siz
 	current_offset += sizeof (Elf64_Phdr);
 
 	//Copy the rest of the elf
-	memcpy (new_elf_buf + current_offset, elf_buf + current_offset - sizeof (Elf64_Phdr), elf_buf_size - file_header->e_phoff);
+	memcpy (new_elf_buf + current_offset, elf_buf + current_offset - sizeof (Elf64_Phdr), elf_buf_size - current_offset - sizeof (Elf64_Phdr));
 
 	//Copy the new code
 	memcpy (new_elf_buf + new_segment.p_offset, code, code_size);
