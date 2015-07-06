@@ -35,6 +35,7 @@ blob elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_siz
 	//Shoutout to the folks on freenode's ##re channel for helping me figure out this alignment thing!
 	new_segment.p_offset = elf_buf_size;
 	new_segment.p_vaddr = ceil (last_loadable->p_vaddr / (double)getpagesize ()) * getpagesize() + new_segment.p_offset;
+	new_segment.p_paddr = new_segment.p_vaddr;
 	new_segment.p_filesz = code_size;
 	new_segment.p_memsz = code_size;
 	new_segment.p_flags = PF_R | PF_X;
@@ -71,6 +72,10 @@ blob elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_siz
 	new_file_header = (Elf64_Ehdr*)new_elf_buf;
 	new_file_header->e_phnum ++;
 	new_file_header->e_entry = new_segment.p_vaddr;
+	new_file_header->e_shoff = 0;
+	new_file_header->e_shnum = 0;
+	new_file_header->e_shentsize = 0;
+	new_file_header->e_shstrndx = 0;
 
 	free (elf_buf);
 	return ret;
