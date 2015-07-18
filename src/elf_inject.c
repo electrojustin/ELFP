@@ -62,11 +62,14 @@ blob elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_siz
 	new_file_header = (Elf64_Ehdr*)new_elf_buf;
 	new_file_header->e_phnum ++;
 	new_file_header->e_phoff = elf_buf_size;
-	new_file_header->e_entry = ret.buf_size - code_size + first_loadable->p_vaddr;
+	//These should be gone anyway, but 0 these out to be clear that the sections are broken/nonexistant
 	new_file_header->e_shoff = 0;
 	new_file_header->e_shnum = 0;
 	new_file_header->e_shentsize = 0;
 	new_file_header->e_shstrndx = 0;
+
+	//Change main
+	*(int*)(new_elf_buf + file_header->e_entry - first_loadable->p_vaddr + 0x20) = ret.buf_size - code_size + first_loadable->p_vaddr;
 
 	//Fix PHDR segment if present
 	new_program_tables = (Elf64_Phdr*)(new_elf_buf + elf_buf_size);
