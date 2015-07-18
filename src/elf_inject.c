@@ -68,6 +68,20 @@ blob elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_siz
 	new_file_header->e_shentsize = 0;
 	new_file_header->e_shstrndx = 0;
 
+	//Fix PHDR segment if present
+	new_program_tables = (Elf64_Phdr*)(new_elf_buf + elf_buf_size);
+	for (i = 0; i < file_header->e_phnum; i ++)
+	{
+		if (new_program_tables [i].p_type == PT_PHDR)
+		{
+			new_program_tables [i].p_offset = new_file_header->e_phoff;
+			new_program_tables [i].p_vaddr = new_segment.p_vaddr;
+			new_program_tables [i].p_paddr = new_program_tables [i].p_vaddr;
+			new_program_tables [i].p_filesz += sizeof (Elf64_Phdr);
+			new_program_tables [i].p_memsz += sizeof (Elf64_Phdr);
+		}
+	}
+
 	free (elf_buf);
 	return ret;
 }
