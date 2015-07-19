@@ -37,7 +37,7 @@ int main (int argc, char** argv)
 	output = elf_inject (code, 8, input_buf, input_file_size);
 
 	output_file = fopen (argv [2], "w");
-	fwrite (output.buf, output.buf_size, 1, input_file);
+	fwrite (output.buf, output.buf_size, 1, output_file);
 	fclose (output_file);
 	free (output.buf);
 }
