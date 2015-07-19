@@ -41,6 +41,8 @@ blob elf_inject (char* code, size_t code_size, char* elf_buf, size_t elf_buf_siz
 	new_segment.p_flags = PF_R | PF_X;
 	new_segment.p_align = getpagesize ();
 
+	first_loadable [1].p_memsz = 0x604000; //Kind of hacky, should be fine for now, but change this in the future
+
 	//Allocate memory for the new segment
 	new_elf_buf = (char*)malloc (new_segment.p_offset + code_size + (file_header->e_phnum +1) * file_header->e_phentsize);
 	ret.buf_size = new_segment.p_offset + code_size + (file_header->e_phnum + 1) * file_header->e_phentsize;
